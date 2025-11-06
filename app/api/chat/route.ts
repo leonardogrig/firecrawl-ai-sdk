@@ -177,7 +177,7 @@ export async function POST(req: Request) {
   const messages = convertToModelMessages(body.messages as Parameters<typeof convertToModelMessages>[0] ?? []);
 
   const result = streamText({
-    model: openai("gpt-4o-mini"),
+    model: openai("gpt-5-mini"),
     system: [
       "You are a helpful AI assistant with access to web scraping and search capabilities.",
       "You can help users research companies, topics, and gather information from the web using your tools.",
