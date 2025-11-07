@@ -190,6 +190,7 @@ export async function POST(req: Request) {
       "- Use - or * for unordered lists",
       "- Use numbered lists (1., 2., etc.) for ordered items",
       "- Use `code` for technical terms",
+      "Whenever the user specifies a website use the scrapeWebsite tool, otherwise use the searchWeb tool.",
       "Keep your responses concise and helpful.",
     ].join("\n"),
     messages,
