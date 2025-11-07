@@ -289,7 +289,20 @@ function ChatMessage({ message }: { message: UIMessage }) {
 
           {textParts.length ? (
             <Response>
-              {textParts.map((part) => part.text).join("")}
+              {(() => {
+                const text = textParts.map((part) => part.text).join("");
+                // Try to detect if this is a JSON response and format it
+                try {
+                  const parsed = JSON.parse(text);
+                  // If it parses successfully and looks like our scout response schema
+                  if (parsed && typeof parsed === 'object' && 'taskCompleted' in parsed) {
+                    return '```json\n' + JSON.stringify(parsed, null, 2) + '\n```';
+                  }
+                } catch {
+                  // Not JSON, return as-is
+                }
+                return text;
+              })()}
             </Response>
           ) : null}
         </div>
