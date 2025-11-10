@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useChat } from "@ai-sdk/react";
@@ -52,7 +52,10 @@ import {
   ConfirmationRequest,
   ConfirmationTitle,
 } from "@/components/ai-elements/elements/confirmation";
-import { Suggestions, Suggestion } from "@/components/ai-elements/elements/suggestion";
+import {
+  Suggestions,
+  Suggestion,
+} from "@/components/ai-elements/elements/suggestion";
 
 const suggestions = [
   "Give me a quick company briefing for firecrawl.dev",
@@ -73,28 +76,31 @@ const Example = () => {
   useEffect(() => {
     if (!isInitialized.current) {
       isInitialized.current = true;
-      const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      const shouldBeDark =
+        savedTheme === "dark" || (!savedTheme && prefersDark);
 
       if (shouldBeDark) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsDarkMode(true);
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add("dark");
       }
     }
   }, []);
 
   // Handle theme toggle
   const toggleDarkMode = useCallback(() => {
-    setIsDarkMode(prev => {
+    setIsDarkMode((prev) => {
       const newValue = !prev;
       if (newValue) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
       } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
       }
       return newValue;
     });
@@ -112,14 +118,14 @@ const Example = () => {
       sendMessage({ text: content });
       setText("");
     },
-    [sendMessage],
+    [sendMessage]
   );
 
   const handleSuggestionClick = useCallback(
     (value: string) => {
       sendMessage({ text: value });
     },
-    [sendMessage],
+    [sendMessage]
   );
 
   const isStreaming = status === "streaming";
@@ -148,85 +154,92 @@ const Example = () => {
           </Conversation>
 
           <div className="shrink-0 grid gap-4">
-          {messages.length === 0 && (
-            <Suggestions>
-              {suggestions.map((suggestion) => (
-                <Suggestion
-                  key={suggestion}
-                  suggestion={suggestion}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                />
-              ))}
-            </Suggestions>
-          )}
+            {messages.length === 0 && (
+              <Suggestions>
+                {suggestions.map((suggestion) => (
+                  <Suggestion
+                    key={suggestion}
+                    suggestion={suggestion}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  />
+                ))}
+              </Suggestions>
+            )}
 
-          {error ? (
-            <p className="px-2 text-sm text-red-500">
-              {error.message}
-            </p>
-          ) : null}
+            {error ? (
+              <p className="px-2 text-sm text-red-500">{error.message}</p>
+            ) : null}
 
-          <div className="w-full">
-          <PromptInput onSubmit={handleSubmit}>
-            <PromptInputHeader>
-              <PromptInputAttachments>{() => null}</PromptInputAttachments>
-            </PromptInputHeader>
-            <PromptInputBody>
-              <PromptInputTextarea
-                name="prompt-text"
-                value={text}
-                onChange={(event) => setText(event.target.value)}
-                onKeyDown={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                  if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-                    event.preventDefault();
-                    if (text.trim() && !isStreaming) {
-                      handleSubmit({ text: text.trim() });
-                    }
-                  }
-                }}
-              />
-            </PromptInputBody>
-            <PromptInputFooter>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={toggleDarkMode}
-                  className="rounded-xl border border-zinc-200 px-3 py-2 text-xs text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-500"
-                  aria-label="Toggle dark mode"
-                >
-                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                </button>
-                {messages.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMessages([]);
-                      setText("");
+            <div className="w-full">
+              <PromptInput onSubmit={handleSubmit}>
+                <PromptInputHeader>
+                  <PromptInputAttachments>{() => null}</PromptInputAttachments>
+                </PromptInputHeader>
+                <PromptInputBody>
+                  <PromptInputTextarea
+                    name="prompt-text"
+                    value={text}
+                    onChange={(event) => setText(event.target.value)}
+                    onKeyDown={(
+                      event: React.KeyboardEvent<HTMLTextAreaElement>
+                    ) => {
+                      if (
+                        (event.metaKey || event.ctrlKey) &&
+                        event.key === "Enter"
+                      ) {
+                        event.preventDefault();
+                        if (text.trim() && !isStreaming) {
+                          handleSubmit({ text: text.trim() });
+                        }
+                      }
                     }}
-                    className="rounded-xl border border-zinc-200 px-3 py-2 text-xs text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-500"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                {isStreaming ? (
-                  <button
-                    type="button"
-                    onClick={() => stop()}
-                    className="text-xs text-zinc-500 underline underline-offset-4 hover:text-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-100"
-                  >
-                    Stop
-                  </button>
-                ) : null}
-                <PromptInputSubmit
-                  disabled={!text.trim() || isStreaming}
-                  status={status}
-                />
-              </div>
-            </PromptInputFooter>
-          </PromptInput>
-          </div>
+                  />
+                </PromptInputBody>
+                <PromptInputFooter>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={toggleDarkMode}
+                      className="rounded-xl border border-zinc-200 px-3 py-2 text-xs text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-500"
+                      aria-label="Toggle dark mode"
+                    >
+                      {isDarkMode ? (
+                        <Sun className="h-4 w-4" />
+                      ) : (
+                        <Moon className="h-4 w-4" />
+                      )}
+                    </button>
+                    {messages.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMessages([]);
+                          setText("");
+                        }}
+                        className="rounded-xl border border-zinc-200 px-3 py-2 text-xs text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-500"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {isStreaming ? (
+                      <button
+                        type="button"
+                        onClick={() => stop()}
+                        className="text-xs text-zinc-500 underline underline-offset-4 hover:text-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-100"
+                      >
+                        Stop
+                      </button>
+                    ) : null}
+                    <PromptInputSubmit
+                      disabled={!text.trim() || isStreaming}
+                      status={status}
+                    />
+                  </div>
+                </PromptInputFooter>
+              </PromptInput>
+            </div>
           </div>
         </div>
       </div>
@@ -240,12 +253,13 @@ function ChatMessage({ message }: { message: UIMessage }) {
   const role = message.role === "assistant" ? "assistant" : "user";
   const textParts = (message.parts ?? []).filter(
     // @ts-expect-error - UIMessagePart type inference issue
-    (part): part is Extract<UIMessagePart, { type: "text" }> => part.type === "text",
+    (part): part is Extract<UIMessagePart, { type: "text" }> =>
+      part.type === "text"
   );
   const reasoningParts = (message.parts ?? []).filter(
     // @ts-expect-error - UIMessagePart type inference issue
     (part): part is Extract<UIMessagePart, { type: "reasoning" }> =>
-      part.type === "reasoning",
+      part.type === "reasoning"
   );
   const toolCalls = extractToolCalls(message);
 
@@ -254,11 +268,16 @@ function ChatMessage({ message }: { message: UIMessage }) {
 
   return (
     <Message from={role}>
-      {role === "assistant" ? <MessageAvatar name={displayName} src={avatarSrc} /> : null}
+      {role === "assistant" ? (
+        <MessageAvatar name={displayName} src={avatarSrc} />
+      ) : null}
       <MessageContent>
         <div className="flex flex-col gap-3">
           {reasoningParts.map((part, index) => (
-            <Reasoning duration={part.text.length % 12} key={`${part.id}-reasoning-${index}`}>
+            <Reasoning
+              duration={part.text.length % 12}
+              key={`${part.id}-reasoning-${index}`}
+            >
               <ReasoningTrigger />
               <ReasoningContent>{part.text}</ReasoningContent>
             </Reasoning>
@@ -288,13 +307,13 @@ function ChatMessage({ message }: { message: UIMessage }) {
           ))}
 
           {textParts.length ? (
-            <Response>
-              {textParts.map((part) => part.text).join("")}
-            </Response>
+            <Response>{textParts.map((part) => part.text).join("")}</Response>
           ) : null}
         </div>
       </MessageContent>
-      {role === "user" ? <MessageAvatar name={displayName} src={avatarSrc} /> : null}
+      {role === "user" ? (
+        <MessageAvatar name={displayName} src={avatarSrc} />
+      ) : null}
     </Message>
   );
 }
@@ -318,18 +337,16 @@ type ToolCall = {
 function extractToolCalls(message: UIMessage): ToolCall[] {
   if (!message.parts) return [];
 
-  return message.parts
-    .filter(isToolPart)
-    .map((part, index) => ({
-      id: part.toolCallId ?? `${getToolName(part)}-${index}`,
-      name: getToolName(part),
-      type: part.type,
-      state: (part as { state?: string }).state ?? "unknown",
-      input: (part as { input?: unknown }).input,
-      output: formatToolOutput((part as { output?: unknown }).output),
-      errorText: (part as { errorText?: string }).errorText,
-      approval: extractApproval(part),
-    }));
+  return message.parts.filter(isToolPart).map((part, index) => ({
+    id: part.toolCallId ?? `${getToolName(part)}-${index}`,
+    name: getToolName(part),
+    type: part.type,
+    state: (part as { state?: string }).state ?? "unknown",
+    input: (part as { input?: unknown }).input,
+    output: formatToolOutput((part as { output?: unknown }).output),
+    errorText: (part as { errorText?: string }).errorText,
+    approval: extractApproval(part),
+  }));
 }
 
 function formatToolOutput(value: unknown): ReactNode {
@@ -365,7 +382,10 @@ function formatToolOutput(value: unknown): ReactNode {
     return (
       <div className="flex flex-col gap-3 text-xs text-zinc-600 dark:text-zinc-300">
         {payload.results.map((item, index) => (
-          <div key={item.url ?? `${payload.query}-${index}`} className="flex flex-col gap-1">
+          <div
+            key={item.url ?? `${payload.query}-${index}`}
+            className="flex flex-col gap-1"
+          >
             {item.title ? (
               <span className="font-medium text-zinc-700 dark:text-zinc-100">
                 {item.title}
@@ -381,7 +401,9 @@ function formatToolOutput(value: unknown): ReactNode {
                 {item.url}
               </a>
             ) : null}
-            {item.snippet ? <p className="wrap-break-word">{item.snippet}</p> : null}
+            {item.snippet ? (
+              <p className="wrap-break-word">{item.snippet}</p>
+            ) : null}
             {item.publishedTime ? (
               <span className="text-[11px] uppercase tracking-wide text-zinc-400">
                 {item.publishedTime}
@@ -400,14 +422,16 @@ function formatToolOutput(value: unknown): ReactNode {
   );
 }
 
-type ToolPart = ToolUIPart | (DynamicToolUIPart & {
-  approval?: {
-    id?: string;
-    approved?: boolean;
-    reason?: string;
-    state?: string;
-  };
-});
+type ToolPart =
+  | ToolUIPart
+  | (DynamicToolUIPart & {
+      approval?: {
+        id?: string;
+        approved?: boolean;
+        reason?: string;
+        state?: string;
+      };
+    });
 
 function extractApproval(part: ToolPart) {
   if ("approval" in part && part.approval) {
